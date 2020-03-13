@@ -74,28 +74,47 @@ router.route('/users')
 
 router.route('/Movies')
     .get(authJwtController.isAuthenticated, function (req, res) {
-            console.log(req.body);
-            res = res.status(200);
-            if (req.get('Content-Type')) {
-                console.log("Content-Type: " + req.get('Content-Type'));
-                res = res.type(req.get('Content-Type'));
-            }
-            res.json(getJSONObject(req, 'GET /movies', '200'));
+        Movie.find(function(err,movies){
+            if (err) res.send(err);
+
+            res.json(movies);
+        });
+
     });
 
 router.route('/Movies')
     .post(authJwtController.isAuthenticated, function (req, res) {
-        console.log(req.body);
-        res = res.status(200);
-        if (req.get('Content-Type')) {
-            console.log("Content-Type: " + req.get('Content-Type'));
-            res = res.type(req.get('Content-Type'));
-        }
-        res.json(getJSONObject(req, 'POST /movies', '200'));
+
+        //create a new instance of movie
+        var movie = new Movie();
+
+            movie.Title = req.body.movietitle;
+            movie.ReleaseYear = req.body.releaseyear;
+            movie.Genre = req.body.genre;
+            movie.FirstActor= req.body.firstactor;
+            movie.FirstActorChar = req.body.firstactorchar;
+            movie.SecondActor = req.body.secondactor;
+            movie.SecondActorChar = req.body.secondactorchar;
+            movie.ThirdActor= req.body.thirdactor;
+            movie.ThirdActorChar = req.body.thirdactorchar;
+
+            movie.save(function(err){
+                if (err){
+                    //duplicate entry
+                    if(err.code == 11000)
+                        return res.json({sucess: false, message: 'A Movie with that title already exitst'});
+                    else
+                        return res.send(err);
+                }
+                    res.json({message: 'Movie Created!'});
+            });
+
     });
 
 router.route('/Movies')
     .put(authJwtController.isAuthenticated, function (req, res) {
+
+
         console.log(req.body);
         res = res.status(200);
         if (req.get('Content-Type')) {
