@@ -114,28 +114,30 @@ router.route('/Movies')
 router.route('/Movies')
     .put(authJwtController.isAuthenticated, function (req, res) {
 
+        Movie.findById(req.body.movie_id, function(err, movie){
 
-        console.log(req.body);
-        res = res.status(200);
-        if (req.get('Content-Type')) {
-            console.log("Content-Type: " + req.get('Content-Type'));
-            res = res.type(req.get('Content-Type'));
-        }
-        res.json(getJSONObject(req, 'PUT /movies', '200'));
+                if (err) res.send(err);
+
+                //update the movie info only if it is new
+                if(req.body.movietitle) movie.Title = req.body.movietitle;
+                if(req.body.releaseyear) movie.ReleaseYear = req.body.releaseyear;
+                if(req.body.genre) movie.Genre = req.body.genre;
+                if(req.body.firstactor) movie.FirstActor = req.body.firstactor;
+                if(req.body.firstactorchar) movie.FirstActorChar = req.body.firstactorchar;
+                if(req.body.secondactor) movie.SecondActor = req.body.secondactor;
+                if(req.body.secondactorchar) movie.SecondActorChar = req.body.secondactorchar;
+                if(req.body.thirdactor) movie.ThirdActor = req.body.thirdactor;
+                if(req.body.thirdactorchar) movie.ThirdActorChar = req.body.thirdactorchar;
+
+                //save the movie
+                movie.save(function(err){
+                    if (err) res.send(err);
+
+                    res.json({message: 'Movie Updated !'});
+                });
 
 
-        var movie;
-        movie = new Movie;
-        movie.Title = req.body.title;
-        movie.ReleaseYear = req.body.ReleaseYear;
-        movie.Genre= req.body.Genre;
-        movie. FirstActor=req.body.FirstActor;
-        movie.FirstActorChar=req.body.FirstActorChar;
-        movie.SecondActor = req.body.SecondActor;
-        movie.SecondActorChar=req.body.SecondActorChar;
-        movie.ThirdActor = req.body.ThirdActor;
-        movie.ThirdActorChar = req.body.ThirdActorChar;
-
+        });
 
 
     });
@@ -143,13 +145,13 @@ router.route('/Movies')
 
 router.route('/Movies')
     .delete(authJwtController.isAuthenticated, function (req, res) {
-        console.log(req.body);
-        res = res.status(200);
-        if (req.get('Content-Type')) {
-            console.log("Content-Type: " + req.get('Content-Type'));
-            res = res.type(req.get('Content-Type'));
-        }
-        res.json(getJSONObject(req, 'Delete /movies', '200'));
+        Movie.remove({
+            _id:req.body.movie_id
+        }, function(err,movies){
+            if (err) return res.send(err);
+
+            res.json({message: "Sucessfully Deleted"});
+        });
     });
 
 

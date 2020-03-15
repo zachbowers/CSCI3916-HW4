@@ -11,12 +11,12 @@ var MovieSchema = new Schema({
     Title: {type: String, required: true, },
     ReleaseYear: {type: Number, required: true},
     Genre: {type: String, required: true},
-    FirstActor:{type: Array, required: true},
-    FirstActorChar: {type: Array, required: true},
-    SecondActor: {type: Array, required: true},
-    SecondActorChar: {type: Array, required: true},
-    ThirdActor: {type: Array, required: true},
-    ThirdActorChar: {type: Array, required :true},
+    FirstActor:{type: String, required: true},
+    FirstActorChar: {type: String, required: true},
+    SecondActor: {type: String, required: true},
+    SecondActorChar: {type: String, required: true},
+    ThirdActor: {type: String, required: true},
+    ThirdActorChar: {type: String, required :true},
 });
 
 module.exports = mongoose.model('Movie', MovieSchema);
