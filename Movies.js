@@ -17,6 +17,7 @@ var MovieSchema = new Schema({
     SecondActorChar: {type: String, required: true},
     ThirdActor: {type: String, required: true},
     ThirdActorChar: {type: String, required :true},
+    MovieReview: {type: String, required: true}
 });
 
 module.exports = mongoose.model('Movie', MovieSchema);

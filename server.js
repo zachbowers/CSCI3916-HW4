@@ -6,6 +6,7 @@ var User = require('./Users');
 var jwt = require('jsonwebtoken');
 var cors = require('cors');
 var Movie = require('./Movies');
+var Review =require('./Review');
 var app = express();
 app.use(cors());
 
@@ -81,6 +82,15 @@ router.route('/Movies')
         });
 
     });
+router.route('/Review')
+    .get(authJwtController.isAuthenticated, function (req, res) {
+        Review.find(function(err,review){
+            if (err) res.send(err);
+
+            res.json(review);
+        });
+
+    });
 
 router.route('/Movies')
     .post(authJwtController.isAuthenticated, function (req, res) {
@@ -98,6 +108,11 @@ router.route('/Movies')
             movie.ThirdActor= req.body.thirdactor;
             movie.ThirdActorChar = req.body.thirdactorchar;
 
+
+        movie.MovieReview = req.body.moviereview;
+        movie.ReviewerName = req.body.reviewername;
+        movie.Rating = req.body.rating;
+
             movie.save(function(err){
                 if (err){
                     //duplicate entry
@@ -108,6 +123,30 @@ router.route('/Movies')
                 }
                     res.json({message: 'Movie Created!'});
             });
+
+    });
+
+router.route('/Review')
+    .post(authJwtController.isAuthenticated, function (req, res) {
+
+        //create a new instance of movie
+        var review = new Review();
+
+        review.Title = req.body.movietitle;
+        review.MovieReview = req.body.moviereview;
+        review.ReviewerName = req.body.reviewername;
+        review.Rating = req.body.rating;
+
+        movie.save(function(err){
+            if (err){
+                //duplicate entry
+                if(err.code == 11000)
+                    return res.json({sucess: false, message: 'A Movie with that title already exitst'});
+                else
+                    return res.send(err);
+            }
+            res.json({message: 'Movie Created!'});
+        });
 
     });
 
@@ -128,6 +167,8 @@ router.route('/Movies')
                 if(req.body.secondactorchar) movie.SecondActorChar = req.body.secondactorchar;
                 if(req.body.thirdactor) movie.ThirdActor = req.body.thirdactor;
                 if(req.body.thirdactorchar) movie.ThirdActorChar = req.body.thirdactorchar;
+                if(req.body.moviereview) movie.MovieReview = req.body.moviereview;
+                if(req.body.reviewername) movie.ReviewerName = req.body.reviewername;
 
                 //save the movie
                 movie.save(function(err){
