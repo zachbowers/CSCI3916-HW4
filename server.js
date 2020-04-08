@@ -80,8 +80,21 @@ router.route('/Movies')
 
             res.json(movies);
         });
+        Movie.aggregate([{
+            $lookup: {
+
+                from: "review",
+                localField: "Title",
+                foreignField: "Title",
+                as: "reviews"
+                //see $lookup documentation from should be reviews, localfield is Title (maybe?), foreignfield is Title, as “reviews”
+            }
+            //.exec(function(err, movies)
+
+        }]);
 
 
+        res.send(movies);
     });
 
 
