@@ -6,7 +6,7 @@ var User = require('./Users');
 var jwt = require('jsonwebtoken');
 var cors = require('cors');
 var Movie = require('./Movies');
-var Review =require('./Review');
+var Review = require('./Review');
 var app = express();
 app.use(cors());
 
@@ -81,16 +81,9 @@ router.route('/Movies')
             res.json(movies);
         });
 
-    });
-router.route('/Review')
-    .get(authJwtController.isAuthenticated, function (req, res) {
-        Review.find(function(err,review){
-            if (err) res.send(err);
-
-            res.json(review);
-        });
 
     });
+
 
 router.route('/Movies')
     .post(authJwtController.isAuthenticated, function (req, res) {
@@ -109,9 +102,7 @@ router.route('/Movies')
             movie.ThirdActorChar = req.body.thirdactorchar;
 
 
-        movie.MovieReview = req.body.moviereview;
-        movie.ReviewerName = req.body.reviewername;
-        movie.Rating = req.body.rating;
+
 
             movie.save(function(err){
                 if (err){
@@ -126,29 +117,6 @@ router.route('/Movies')
 
     });
 
-router.route('/Review')
-    .post(authJwtController.isAuthenticated, function (req, res) {
-
-        //create a new instance of movie
-        var review = new Review();
-
-        review.Title = req.body.movietitle;
-        review.MovieReview = req.body.moviereview;
-        review.ReviewerName = req.body.reviewername;
-        review.Rating = req.body.rating;
-
-        movie.save(function(err){
-            if (err){
-                //duplicate entry
-                if(err.code == 11000)
-                    return res.json({sucess: false, message: 'A Movie with that title already exitst'});
-                else
-                    return res.send(err);
-            }
-            res.json({message: 'Movie Created!'});
-        });
-
-    });
 
 router.route('/Movies')
     .put(authJwtController.isAuthenticated, function (req, res) {
@@ -193,6 +161,74 @@ router.route('/Movies')
 
             res.json({message: "Sucessfully Deleted"});
         });
+    });
+
+
+
+router.route('/Review')
+    .get(authJwtController.isAuthenticated, function (req, res) {
+        Review.find(function(err,reviews){
+            if (err) res.send(err);
+
+            res.json(reviews);
+        });
+
+
+    });
+
+router.route('/Review')
+    .post(authJwtController.isAuthenticated, function (req, res) {
+
+        //create a new instance of movie
+        var review = new Review();
+
+        review.Title = req.body.movietitle;
+        review.MovieReview = req.body.moviereview;
+        review.ReviewerName = req.body.reviewername;
+        review.Rating= req.body.rating;
+
+
+
+
+
+        review.save(function(err){
+            if (err){
+                //duplicate entry
+               // if(err.code == 11000)
+                   // return res.json({sucess: false, message: 'A Review with that title already exitst'});
+               // else
+                return res.send(err);
+            }
+            res.json({message: 'Review Created!'});
+        });
+
+    });
+
+router.route('/Review')
+    .put(authJwtController.isAuthenticated, function (req, res) {
+
+        Review.findById(req.body.review_id, function(err, review){
+
+            if (err) res.send(err);
+
+            //update the movie info only if it is new
+            if(req.body.movietitle) review.Title = req.body.movietitle;
+            if(req.body.moviereview) review.MovieReview = req.body.moviereview;
+            if(req.body.reviewername)review.ReviewerName = req.body.reviewername;
+            if(req.body.rating) review.Rating= req.body.rating;
+
+
+            //save the review
+            review.save(function(err){
+                if (err) res.send(err);
+
+                res.json({message: 'Review Updated !'});
+            });
+
+
+        });
+
+
     });
 
 
