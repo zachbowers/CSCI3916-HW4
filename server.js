@@ -75,12 +75,7 @@ router.route('/users')
 
 router.route('/Movies')
     .get(authJwtController.isAuthenticated, function (req, res) {
-       // Movie.find(function(err,movies){
-          //  if (err) res.send(err);
-
-          //  res.json(movies);
-      //  });
-        Movie.aggregate([{
+      Movie.aggregate([{
             $lookup: {
 
                 from: "reviews",
@@ -117,6 +112,7 @@ router.route('/Movies')
             movie.SecondActorChar = req.body.secondactorchar;
             movie.ThirdActor= req.body.thirdactor;
             movie.ThirdActorChar = req.body.thirdactorchar;
+            movie.imageUrl = req.body.imageurl;
 
 
 
@@ -154,6 +150,7 @@ router.route('/Movies')
                 if(req.body.thirdactorchar) movie.ThirdActorChar = req.body.thirdactorchar;
                 if(req.body.moviereview) movie.MovieReview = req.body.moviereview;
                 if(req.body.reviewername) movie.ReviewerName = req.body.reviewername;
+                if(req.body.imageurl) movie.imageUrl = req.body.reviewername;
 
                 //save the movie
                 movie.save(function(err){
