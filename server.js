@@ -150,7 +150,8 @@ router.route('/Movies')
                 if(req.body.thirdactorchar) movie.ThirdActorChar = req.body.thirdactorchar;
                 if(req.body.moviereview) movie.MovieReview = req.body.moviereview;
                 if(req.body.reviewername) movie.ReviewerName = req.body.reviewername;
-                if(req.body.imageurl) movie.imageUrl = req.body.reviewername;
+                if(req.body.imageurl) movie.imageUrl = req.body.imageurl;
+
 
                 //save the movie
                 movie.save(function(err){
